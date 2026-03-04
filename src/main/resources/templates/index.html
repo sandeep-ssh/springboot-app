@@ -1,55 +1,165 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-      <title>My Awesome Spring Boot App</title>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-      <script src="/js/controller.js"></script>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-      
+    <title>Customer Management | Spring Boot</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="/js/controller.js"></script>
+
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            width: 220px;
+        }
+
+        .sidebar h4 {
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            color: #cbd5e1;
+            display: block;
+            padding: 10px 0;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-custom {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e40af;
+        }
+
+        .table thead {
+            background-color: #f1f5f9;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-weight: 500;
+            color: green;
+        }
+    </style>
 </head>
-<body>
- 
-<div class="container" ng-app="app">
- 
-    <h3 style="color:blue"> My Awesome Spring Boot App Running on EKS Cluster </h3>
-    
-    <div ng-controller="postcontroller">
-        <form class="form-horizontal" name="customerForm" ng-submit="submitForm()">
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="firstnameID">First Name:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" name="firstname" id="firstnameID"
-                        placeholder="Enter FirstName" ng-model="firstname"/>
+
+<body ng-app="app">
+
+<div class="sidebar">
+    <h4>MyOB Dashboard</h4>
+    <a href="#">Dashboard</a>
+    <a href="#">Customers</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+</div>
+
+<div class="main-content">
+
+    <div class="topbar">
+        <h5 class="mb-0">Customer Management System</h5>
+        <small class="text-muted">Spring Boot running on EKS</small>
+    </div>
+
+    <!-- Add Customer Card -->
+    <div class="card-custom" ng-controller="postcontroller">
+        <h5>Add New Customer</h5>
+        <form name="customerForm" ng-submit="submitForm()">
+            <div class="form-row">
+                <div class="form-group col-md-5">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" 
+                           placeholder="Enter First Name" 
+                           ng-model="firstname" required>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="lastnameID">Last Name:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" name="lastname" id="lastnameID"
-                        placeholder="Enter LastName" ng-model="lastname"/>
+
+                <div class="form-group col-md-5">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" 
+                           placeholder="Enter Last Name" 
+                           ng-model="lastname" required>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default" id="submit">Submit</button>
+
+                <div class="form-group col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Add
+                    </button>
                 </div>
             </div>
         </form>
- 
-        <div class="col-sm-offset-2 col-sm-10">
-            <p>{{postResultMessage}}</p>
+
+        <div class="status-message">
+            {{postResultMessage}}
         </div>
     </div>
-    
-    <div class="col-sm-offset-2 col-sm-10" ng-controller="getcontroller">
-        <button id="getAllCustomersId" type="button" class="btn btn-primary" ng-click="getfunction()">Get All Customers!</button>
-        <ul>
-            <li ng-repeat="cust in response">{{cust.firstname + " " + cust.lastname}}</li>
-        </ul>
+
+    <!-- Customer List Card -->
+    <div class="card-custom" ng-controller="getcontroller">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Customer List</h5>
+            <button class="btn btn-primary" ng-click="getfunction()">
+                Refresh
+            </button>
+        </div>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="cust in response">
+                    <td>{{cust.firstname}}</td>
+                    <td>{{cust.lastname}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    
+
 </div>
+
 </body>
 </html>
